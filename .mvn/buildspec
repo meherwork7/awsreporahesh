@@ -1,0 +1,29 @@
+version: 0.2
+
+phases:
+  install:
+    java: corretto8
+  pre_build:
+    commands:
+      - echo "Installing dependencies..."
+      - docker pull maven:3.6-jdk-11
+      - mvn install -DskipTests=true
+      - mvn clean 
+      - aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 302263088540.dkr.ecr.ap-southeast-2.amazonaws.com
+  build:
+    commands:
+      - mvn package
+      - echo "Building Docker image..."
+      - docker build -t "rajeshtest:latest" .
+      - docker tag rajeshtest:latest 302263088540.dkr.ecr.ap-southeast-2.amazonaws.com/rajeshjavafunction:latest
+      - docker push 302263088540.dkr.ecr.ap-southeast-2.amazonaws.com/rajeshjavafunction:latest
+  post_build:
+    commands:
+      - echo "Build completed successfully!"
+artifacts:
+  files:
+    - hero.jar 
+cache:
+  # Optionally, cache dependencies to speed up future builds
+ paths:
+    - '/root/.m2/**/*'  # Maven dependencies cache
