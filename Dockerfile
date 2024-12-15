@@ -11,4 +11,4 @@ COPY target/hero.jar /usr/app/hero.jar
 ENTRYPOINT ["java", "-jar", "hero.jar"]
 
 # Optional: Expose a port if your application runs on a specific port (for example, 8080)
-EXPOSE 8080
+EXPOSE 8084
